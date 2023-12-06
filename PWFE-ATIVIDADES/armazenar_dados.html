@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exer9</title>
+</head>
+<body>
+    <h1>Adicionar Produtos na Lista</h1>
+    <label for="nome-produto">Nome do produto</label>
+    <input type="text" id="nome-produto" name="nome-produto">
+    <br><label for="preco-produto">Preço Produto</label>
+    <input type="number" id="preco-produto" name="preco-produto">
+    <button onclick="adicionarProduto()">adicionar Produto</button>
+    <!--nossa lista de produtos-->
+    <h2>Lista de Produtos</h2>
+    <ul id="lista-produtos">
+        <!--aqui serão criados os itens da lista-->
+    </ul>
+    <!--editar campos-->
+    <h2>Editar dados da Lista</h2>
+    <label for="editar-nome-produto">Editar Nome Produto</label>
+    <input type="text" id="editar-nome-produto" name="editar-nome-produto"><br>
+    <label for="editar-preco-produto">Editar Preço Produto</label>
+    <input type="number" id="editar-preco-produto" name="editar-preco-produto"><br>
+    <button onclick="atualizarProduto()">atualizar Produto</button>
+    <!--excluir produtos-->
+    <h2>Excluir dados da Lista</h2>
+    <select id="excluir-produto"></select>
+    <button onclick="excluirProduto()">excluir Produto</button>
+
+
+
+    <script>
+        //array para guardar os dados
+        let listaProdutos = [];
+        //função para add produtos
+        function adicionarProduto(){
+            const nome = document.getElementById("nome-produto").value;
+            const preco = parseFloat(document.getElementById("preco-produto").value);
+            if(nome && preco){
+                listaProdutos.push({nome, preco});
+                atualizarListaProduto();
+                limparCampos();
+            }
+        }
+        //função atualizar
+        function atualizarListaProduto(){
+            const lista = document.getElementById("lista-produtos");
+            lista.innerHTML = '';
+            listaProdutos.forEach((produto,index) =>{
+                const li = document.createElement("li");
+                li.textContent = `${produto.nome} - R$ ${produto.preco.toFixed(2)}`;
+                //add botao p/ edicao de valores
+                const botaoEditar = document.createElement('button');
+                botaoEditar.textContent = 'Editar dados';
+                botaoEditar.onclick = () => preencherFormularioEditar(index)
+                li.appendChild(botaoEditar);
+                lista.appendChild(li);
+            })
+            atualizarListaExclusao();
+        }
+        //formulario editar
+        function preencherFormularioEditar(index){
+            const produto = listaProdutos[index];
+            document.getElementById("editar-nome-produto").value = produto.nome;
+            document.getElementById("editar-preco-produto").value = produto.preco;
+        }
+        //função atualizar 
+        function atualizarListaExclusao(){
+            const selectExcluir = document.getElementById("excluir-produto");
+            selectExcluir.innerHTML = '';
+            listaProdutos.forEach((produto,index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = produto.nome;
+                selectExcluir.appendChild(option);
+            }); 
+        }
+        //atualizar produto
+        function atualizarProduto(){
+            const index = document.getElementById("excluir-produto").value;
+            const nome = document.getElementById("editar-nome-produto").value;
+            const preco = parseFloat(document.getElementById("editar-preco-produto").value);
+            if(index !== '' && nome && preco){
+            listaProdutos[index] = {nome, preco};
+            atualizarListaProduto();
+            limparFormularioEditar();
+            }
+        }
+        //limpar campos
+        function limparCampos(){
+            document.getElementById("nome-produto").value = "";
+            document.getElementById("preco-produto").value = "";
+        }
+        //limpar form
+        function limparFormularioEditar(){
+            document.getElementById("editar-nome-produto").value = "";
+            document.getElementById("editar-preco-produto").value = "";
+        }
+        //função excluir
+        function excluirProduto(){
+            const index = document.getElementById("excluir-produto").value;
+            if(index !== ' '){
+                listaProdutos.splice(index,1);
+                atualizarListaProduto();
+            }
+        }
+        //atualizar o browser para o usuario
+        window.onload = function(){
+            atualizarProduto();
+        }
+
+    </script>
+</body>
+</html>
